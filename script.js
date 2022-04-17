@@ -32,7 +32,7 @@
         }
 
         drawEndHandler() {
-            MainButton.show();
+            Telegram.WebApp.MainButton.show();
         }
 
         submitHandler() {
