@@ -32,9 +32,7 @@
         }
 
         drawEndHandler() {
-            if (!MainButton.isVisible) {
-                MainButton.show();
-            }
+            MainButton.show();
         }
 
         submitHandler() {
