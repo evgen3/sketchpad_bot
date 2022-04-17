@@ -6,8 +6,8 @@
     class MySketchpad {
         constructor() {
             this.initLibrary();
-            this.initButton();
-            WebApp.ready()
+            WebApp.ready();
+            setTimeout(this.initButton.bind(this), 3000)
         }
 
         initLibrary() {
@@ -19,9 +19,6 @@
                     size: 5
                 }
             });
-
-            this.sketchpad.canvas.addEventListener('touchend', this.drawEndHandler.bind(this))
-            this.sketchpad.canvas.addEventListener('mouseup', this.drawEndHandler.bind(this))
         }
 
         initButton() {
@@ -29,10 +26,7 @@
             document.getElementById('submit').addEventListener('click', this.submitHandler.bind(this));
 
             MainButton.setText('Готово');
-        }
-
-        drawEndHandler() {
-            Telegram.WebApp.MainButton.show();
+            MainButton.show();
         }
 
         submitHandler() {
