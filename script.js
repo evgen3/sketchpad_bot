@@ -1,11 +1,13 @@
 {
     const {WebApp} = window.Telegram
     const {MainButton} = WebApp
+    const isInTelegram = !WebApp.initData
 
     class MySketchpad {
         constructor() {
-            this.initLibrary()
-            this.initButton()
+            this.initLibrary();
+            this.initButton();
+            WebApp.ready()
         }
 
         initLibrary() {
@@ -15,15 +17,20 @@
                 line: {
                     color: 'black',
                     size: 5
+                },
+                onDrawEnd: () => {
+                    if (!MainButton.isVisible) {
+                        MainButton.show();
+                    }
                 }
             });
         }
 
         initButton() {
             MainButton.onClick(this.submitHandler.bind(this));
-            document.getElementById('submit').addEventListener('click', this.submitHandler.bind(this))
+            document.getElementById('submit').addEventListener('click', this.submitHandler.bind(this));
+
             MainButton.setText('Готово');
-            MainButton.show();
         }
 
         submitHandler() {
