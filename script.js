@@ -17,13 +17,11 @@
                 line: {
                     color: 'black',
                     size: 5
-                },
-                onDrawEnd: () => {
-                    if (!MainButton.isVisible) {
-                        MainButton.show();
-                    }
                 }
             });
+
+            this.sketchpad.canvas.addEventListener('touchend', this.drawEndHandler.bind(this))
+            this.sketchpad.canvas.addEventListener('mouseup', this.drawEndHandler.bind(this))
         }
 
         initButton() {
@@ -31,6 +29,12 @@
             document.getElementById('submit').addEventListener('click', this.submitHandler.bind(this));
 
             MainButton.setText('Готово');
+        }
+
+        drawEndHandler() {
+            if (!MainButton.isVisible) {
+                MainButton.show();
+            }
         }
 
         submitHandler() {
