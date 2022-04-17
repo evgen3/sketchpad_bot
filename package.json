@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/evgen3/sketchpad_bot/issues"
   },
-  "homepage": "https://github.com/evgen3/sketchpad_bot#readme"
+  "homepage": "https://github.com/evgen3/sketchpad_bot#readme",
+  "dependencies": {
+    "responsive-sketchpad": "^1.2.4"
+  }
 }
