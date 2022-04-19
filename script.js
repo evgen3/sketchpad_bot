@@ -108,6 +108,7 @@
             this.webApp.original.ready();
             this.webApp.original.expand();
             setTimeout(() => this.mainButton.show(), 3000)
+            setTimeout(() => MainButton.show(), 3000)
         }
 
         initButton() {
