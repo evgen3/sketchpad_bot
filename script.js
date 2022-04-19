@@ -37,9 +37,7 @@
             this.mainButton = mainButton
             this.init()
 
-            if (isDebug) {
-                this.mount()
-            }
+            this.mount()
         }
 
         init() {
