@@ -7,7 +7,6 @@
         constructor() {
             this.element = document.createElement('button')
             this.element.style.display = 'none'
-            this.setText('Готово')
         }
 
         onClick(callback) {
@@ -106,14 +105,16 @@
             this.initWebApp()
 
             this.webApp.original.ready();
-            this.webApp.original.expand();
-            setTimeout(() => this.mainButton.show(), 3000)
-            setTimeout(() => MainButton.show(), 3000)
         }
 
         initButton() {
             this.mainButton = new MyMainButton()
-            this.mainButton.onClick(this.submitHandler.bind(this));
+
+            setTimeout(() => {
+                this.mainButton.setText('Готово');
+                this.mainButton.show();
+                this.mainButton.onClick(this.submitHandler.bind(this));
+            }, 3000)
         }
 
         initWebApp() {
