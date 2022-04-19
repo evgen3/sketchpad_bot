@@ -7,6 +7,7 @@
         constructor() {
             this.element = document.createElement('button')
             this.element.style.display = 'none'
+            this.setText('Готово')
         }
 
         onClick(callback) {
@@ -26,6 +27,7 @@
 
         showProgress() {
             this.element.innerText += ' (загрузка)'
+            this.element.disabled = true
             MainButton.showProgress()
         }
     }
@@ -53,49 +55,96 @@
 
     class MySketchpad {
         constructor() {
-            this.mainButton = new MyMainButton()
-            this.debugPanel = new DebugPanel(this.mainButton)
-
-            this.initLibrary();
-            WebApp.ready();
-            setTimeout(this.initButton.bind(this), 2000)
+            this.init()
         }
 
-        initLibrary() {
+        init() {
             const element = document.getElementById('sketchpad');
-
-            this.sketchpad = new Sketchpad(element, {
+        
+            this.original = new Sketchpad(element, {
                 line: {
                     color: 'black',
                     size: 5
                 }
-            });
+            })
         }
 
-        initButton() {
-            this.mainButton.onClick(this.submitHandler.bind(this));
-            this.mainButton.setText('Готово');
-            this.mainButton.show();
-        }
-
-        submitHandler() {
-            this.mainButton.showProgress()
-
-            this.sketchpad.canvas.toBlob(async (blob) => {
-                const formData = new FormData()
-
-                formData.append('initData', WebApp.initData);
-                formData.append('photo_url', blob);
-        
-                await fetch('https://dev2.woobla.su/', {
-                    method: 'POST',
-                    body: formData
-                })
-        
-                WebApp.close()
-            }, 'image/jpg')
+        toBlob() {
+            return new Promise((resolve) => {
+                this.original.canvas.toBlob(resolve, 'image/jpeg')
+            })
         }
     }
 
-    new MySketchpad()
+    class MyWebApp {
+        constructor() {
+            this.original = WebApp
+        }
+
+        close() {
+            if (isDebug) {
+                window.location.reload()
+                return
+            }
+
+            WebApp.close()
+        }
+
+        onResize(callback) {
+            if (isDebug) {
+                window.addEventListener('resize', () => callback(document.documentElement.clientHeight))
+                return
+            }
+
+            this.webApp.original.onEvent('viewportChanged', () => callback(this.original.viewportHeight))
+        }
+    }
+
+    class App {
+        constructor() {
+            this.initButton()
+            this.debugPanel = new DebugPanel(this.mainButton)
+            this.sketchpad = new MySketchpad()
+            this.initWebApp()
+
+            this.webApp.original.ready();
+            this.webApp.original.expand();
+            setTimeout(() => this.mainButton.show(), 2000)
+        }
+
+        initButton() {
+            this.mainButton = new MyMainButton()
+            this.mainButton.onClick(this.submitHandler.bind(this));
+        }
+
+        initWebApp() {
+            this.webApp = new MyWebApp()
+            this.resizeHandler()
+            this.webApp.onResize(this.resizeHandler.bind(this))
+        }
+
+        resizeHandler(height = document.documentElement.clientHeight) {
+            this.sketchpad.original.setCanvasSize(document.documentElement.clientWidth, height)
+            this.sketchpad.original.redraw()
+        }
+
+        async submitHandler() {
+            this.mainButton.showProgress()
+
+            const blob = await this.sketchpad.toBlob()
+            const formData = new FormData()
+
+            formData.append('initData', this.webApp.original.initData);
+            formData.append('photo_url', blob);
+    
+            await fetch('https://dev2.woobla.su/', {
+                method: 'POST',
+                body: formData
+            })
+    
+            this.webApp.close()
+        }
+    }
+
+    new App()
 }
