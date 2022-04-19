@@ -68,7 +68,7 @@
 
         toBlob() {
             return new Promise((resolve) => {
-                this.original.canvas.toBlob(resolve, 'image/jpeg')
+                this.original.canvas.toBlob(resolve, 'image/jpg')
             })
         }
     }
